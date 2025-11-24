@@ -38,9 +38,8 @@ void setup() {
 
 void loop() {
 
-  bluetooth = Serial.read();
-
-  if (bluetooth > 0) {
+  if (Serial.available() > 0) {
+    char bluetooth = Serial.read();
 
     if (bluetooth == ('t')) {
       gestoN1();
@@ -80,57 +79,57 @@ void loop() {
       delay(1000);
     }
 
-    if (bluetooth == ('f')) {
+    else if (bluetooth == ('f')) {
       gestoFechar();
       delay(1000);
     }
 
-    if (bluetooth == ('a')) {
+    else if (bluetooth == ('a')) {
       gestoAbrir();
       delay(1000);
     }
 
-    if (bluetooth == ('v')) {
+    else if (bluetooth == ('v')) {
       gestoVitoria();
       delay(1000);
     }
 
-    if (bluetooth == ('r')) {
+    else if (bluetooth == ('r')) {
       gestoRock();
       delay(1000);
     }
 
-    if (bluetooth == ('s')) {
+    else if (bluetooth == ('s')) {
       gestoAranha();
       delay(1000);
     }
 
-    if (bluetooth == ('h')) {
+    else if (bluetooth == ('h')) {
       gestoHangLoose();
       delay(1000);
     }
 
-    if (bluetooth == ('1')) {
+    else if (bluetooth == ('1')) {
       gestoN1();
       delay(1000);
     }
 
-    if (bluetooth == ('2')) {
+    else if (bluetooth == ('2')) {
       gestoN2();
       delay(1000);
     }
 
-    if (bluetooth == ('3')) {
+    else if (bluetooth == ('3')) {
       gestoN3();
       delay(1000);
     }
 
-    if (bluetooth == ('4')) {
+    else if (bluetooth == ('4')) {
       gestoN4();
       delay(1000);
     }
 
-    if (bluetooth == ('5')) {
+    else if (bluetooth == ('5')) {
       gestoN5();
       delay(1000);
     }
