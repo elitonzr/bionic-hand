@@ -40,7 +40,7 @@ A mão é capaz de realizar vários gestos pré-programados, como:
 - 5x Servo motores (SG90, MG90S ou similares)
 - 1x Módulo Bluetooth (HC-05, HC-06 ou similar) – **opcional**, mas recomendado
 - Fonte de alimentação adequada para os servos
-- Estrutura da mão biônica impressa em 3D
+- Estrutura da mão biônica impressa em 3D [link do Thingiverse](https://www.thingiverse.com/thing:1691704)
 - Jumpers e protoboard (se necessário)
 
 ### Ligações dos Servos
