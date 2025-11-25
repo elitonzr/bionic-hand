@@ -1,11 +1,13 @@
-# bionic-hand - Mão Biônica com Arduino e Servo Motores
+# bionic-hand
+
+## Mão Biônica com Arduino e Servo Motores
 
 Projeto de uma mão biônica impressa em 3D, controlada por um Arduino através de cinco servo motores.  
 Os movimentos (gestos) são acionados via comunicação serial/Bluetooth, permitindo controlar a mão remotamente por um aplicativo ou outro dispositivo.
 
 ## Visão Geral
 
-![alt text](img/bionic-hand.png)
+![bionic-hand.png](img/bionic-hand.png)
 
 Este projeto controla uma mão biônica de 5 dedos usando:
 
@@ -22,11 +24,13 @@ A mão é capaz de realizar vários gestos pré-programados, como:
 - Gesto do Homem-Aranha 🕷🕸
 - Hang Loose 🤙
 - Representação de números de 1 a 5 com os dedos
+- Uma sequência de demonstração automática
 
 ## Funcionalidades
 
-- Controle individual dos 5 dedos por servo motores
+- Controle individual dos 5 dedos por servo motores (usando um **array de servos** no código)
 - Gestos pré-definidos acionados por caracteres recebidos na serial/Bluetooth
+- Comandos aceitos em **maiúsculas e minúsculas** (por exemplo: `A` ou `a` para abrir)
 - Inicialização com animação de abertura e fechamento da mão
 - Feedback via monitor serial indicando o gesto atual
 
@@ -41,15 +45,21 @@ A mão é capaz de realizar vários gestos pré-programados, como:
 
 ### Ligações dos Servos
 
-![alt text](<img/Vista esquemática.png>)
+![Vista esquemática.png](<img/Vista esquemática.png>)
 
-No código, os servos estão ligados às seguintes portas digitais:
+No código, os servos dos dedos são representados por um **array**:
 
-- Servo do dedo 1 → **D2**
-- Servo do dedo 2 → **D3**
-- Servo do dedo 3 → **D4**
-- Servo do dedo 4 → **D5**
-- Servo do dedo 5 → **D6**
+```cpp
+Servo dedo[5];
+```
+
+E estão ligados às seguintes portas digitais:
+
+- `dedo[0]` (Dedo 1) → **D2**
+- `dedo[1]` (Dedo 2) → **D3**
+- `dedo[2]` (Dedo 3) → **D4**
+- `dedo[3]` (Dedo 4) → **D5**
+- `dedo[4]` (Dedo 5) → **D6**
 
 > **Importante:**  
 > Não alimente todos os servos diretamente da porta 5V do Arduino se eles forem puxar muita corrente.  
@@ -73,42 +83,132 @@ Exemplo usando módulo HC-05:
 - [IDE Arduino](https://www.arduino.cc/en/software)
 - Biblioteca `Servo.h` (já vem incluída na IDE Arduino)
 
-### Código Principal
+### Estrutura do Código
 
-O código faz:
+Trechos principais do código:
 
-- Configuração dos servos nas portas digitais
-- Inicialização da comunicação serial a 9600 bps
-- Animação inicial (abrir/fechar mão)
-- Leitura contínua da serial
-- Execução do gesto correspondente ao caractere recebido
+```cpp
+#include <Servo.h>
+
+Servo dedo[5];
+
+int fecha = 180;
+int abre = 0;
+
+void setup()
+{
+  Serial.begin(9600);
+  dedo[0].attach(2);
+  dedo[1].attach(3);
+  dedo[2].attach(4);
+  dedo[3].attach(5);
+  dedo[4].attach(6);
+
+  gestoAbrir();
+  delay(3000);
+
+  gestoFechar();
+  delay(3000);
+
+  gestoAbrir();
+  delay(3000);
+}
+```
+
+A função responsável por aplicar qualquer gesto é:
+
+```cpp
+void aplicaGesto(int d0, int d1, int d2, int d3, int d4)
+{
+  int valores[5] = {d0, d1, d2, d3, d4};
+  for (int i = 0; i < 5; i++)
+  {
+    dedo[i].write(valores[i]);
+  }
+}
+```
+
+Cada gesto chama `aplicaGesto()` com os ângulos de cada dedo (aberto ou fechado), por exemplo:
+
+```cpp
+void gestoAbrir()
+{
+  aplicaGesto(abre, abre, abre, abre, abre);
+  Serial.println("Mão Aberta!");
+}
+
+void gestoFechar()
+{
+  aplicaGesto(fecha, fecha, fecha, fecha, fecha);
+  Serial.println("Mão Fechada!");
+}
+```
 
 ## Mapeamento dos Comandos
 
-### Os gestos são acionados por caracteres recebidos via serial/Bluetooth:
+Os gestos são acionados por caracteres recebidos via serial/Bluetooth.  
+O código aceita **maiúsculas e minúsculas** para os comandos de letras:
 
-- 'a' → Abrir a mão
+- `A` ou `a` → **Abrir** a mão  
+- `F` ou `f` → **Fechar** a mão  
+- `V` ou `v` → Gesto de **Vitória** (✌)  
+- `R` ou `r` → Gesto de **Rock** (🤘)  
+- `S` ou `s` → Gesto do **Aranha**  
+- `H` ou `h` → Gesto **Hang Loose** (🤙)  
 
-- 'f' → Fechar a mão
+Comandos numéricos:
 
-- 'v' → Gesto de Vitória (✌)
+- `'1'` → Gesto **Número 1**  
+- `'2'` → Gesto **Número 2**  
+- `'3'` → Gesto **Número 3**  
+- `'4'` → Gesto **Número 4**  
+- `'5'` → Gesto **Número 5**  
 
-- 'r' → Gesto de Rock (🤘)
+### Sequência de Demonstração
 
-- 's' → Gesto do Aranha
+O caractere `T` ou `t` dispara uma **sequência automática de demonstração**, que executa:
 
-- 'h' → Gesto Hang Loose (🤙)
+1. Gestos de número 1 até 5  
+2. Fecha a mão  
+3. Abre a mão  
+4. Vitória  
+5. Rock  
+6. Aranha  
+7. Hang Loose  
+8. Abre a mão novamente
 
-- '1' → Gesto Número 1
+Essa sequência é ideal para apresentações do projeto.
 
-- '2' → Gesto Número 2
+## Como Usar
 
-- '3' → Gesto Número 3
+1. **Monte** a mão biônica 3D e fixe os servos em cada dedo.
+2. **Conecte** os servos ao Arduino conforme o mapeamento de pinos.
+3. **Carregue** o código na placa usando a IDE Arduino.
+4. Abra o **Monitor Serial** (ou conecte o módulo Bluetooth a um app de terminal).
+5. Configure o monitor serial para:
+   - **Baud rate**: `9600`
+   - **Final de linha**: `No line ending`
+6. Envie os caracteres listados na seção de comandos (`A`, `F`, `V`, `R`, `S`, `H`, `1` a `5`, `T`) e observe a mão executando os gestos.
 
-- '4' → Gesto Número 4
+## Projeto no Tinkercad
 
-- '5' → Gesto Número 5
+Você pode visualizar/experimentar o circuito também no Tinkercad:
 
-Além disso, o caractere 't' dispara uma sequência de demonstração:
+[Projeto no Tinkercad – bionic-hand](https://www.tinkercad.com/things/dSHOwrBsTty-bionic-hand)
 
-[Projeto no Tinkercard](https://www.tinkercad.com/things/dSHOwrBsTty-bionic-hand)
+## Possíveis Melhorias
+
+- Adicionar calibração individual de abertura/fechamento por dedo
+- Suavizar os movimentos dos servos (animação com passos intermediários)
+- Criar um aplicativo para Android para enviar os comandos via Bluetooth
+- Integrar sensores (flex, EMG, etc.) para controle mais natural
+- Adicionar novos gestos personalizados
+
+## Licença
+
+- MIT  
+
+```text
+Este projeto está licenciado sob os termos da licença MIT.  
+Consulte o arquivo LICENSE para mais detalhes.
+```
