@@ -81,12 +81,12 @@ void loop() {
 
     else if (bluetooth == ('f')) {
       gestoFechar();
-      delay(1000);
+      delay(5000);
     }
 
     else if (bluetooth == ('a')) {
       gestoAbrir();
-      delay(1000);
+      delay(5000);
     }
 
     else if (bluetooth == ('v')) {
@@ -140,43 +140,21 @@ void loop() {
 
 
 void gestoFechar() {
-
+  servo1.write(fecha);
+  servo2.write(fecha);
+  servo3.write(fecha);
+  servo4.write(fecha);  
+  servo5.write(fecha);
   Serial.println("Mão Fechada!");
-
-  dedo1 = fecha;
-  servo1.write(dedo1);
-
-  dedo2 = fecha;
-  servo2.write(dedo2);
-
-  dedo3 = fecha;
-  servo3.write(dedo3);
-
-  dedo4 = fecha;
-  servo4.write(dedo4);
-
-  dedo5 = fecha;
-  servo5.write(dedo5);
 }
 
 void gestoAbrir() {
-
+  servo1.write(abre);
+  servo2.write(abre);
+  servo3.write(abre);
+  servo4.write(abre);  
+  servo5.write(abre);
   Serial.println("Mão Aberta!");
-
-  dedo1 = abre;
-  servo1.write(dedo1);
-
-  dedo2 = abre;
-  servo2.write(dedo2);
-
-  dedo3 = abre;
-  servo3.write(dedo3);
-
-  dedo4 = abre;
-  servo4.write(dedo4);
-
-  dedo5 = abre;
-  servo5.write(dedo5);
 }
 
 void gestoVitoria() {
