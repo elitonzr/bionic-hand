@@ -26,11 +26,11 @@ int abre = 0;
 
 void setup() {
   Serial.begin(9600);
-  dedo[0].attach(2);
-  dedo[1].attach(3);
-  dedo[2].attach(4);
-  dedo[3].attach(5);
-  dedo[4].attach(6);
+  dedo[0].attach(2);  // indicador
+  dedo[1].attach(3);  // médio
+  dedo[2].attach(4);  // anelar
+  dedo[3].attach(5);  // mínimo
+  dedo[4].attach(6);  // polegar
 
   gestoAbrir();
   delay(3000);
@@ -40,6 +40,8 @@ void setup() {
 
   gestoAbrir();
   delay(3000);
+
+  gestoApresentacao();
 }
 
 void loop() {
@@ -48,45 +50,7 @@ void loop() {
     char bluetooth = Serial.read();
 
     if (bluetooth == ('T') || bluetooth == ('t')) {
-
-      gestoFechar();
-      delay(3000);
-
-      gestoN1();
-      delay(3000);
-
-      gestoN2();
-      delay(3000);
-
-      gestoN3();
-      delay(3000);
-
-      gestoN4();
-      delay(3000);
-
-      gestoN5();
-      delay(3000);
-
-      gestoFechar();
-      delay(3000);
-
-      gestoAbrir();
-      delay(3000);
-
-      gestoVitoria();
-      delay(3000);
-
-      gestoRock();
-      delay(3000);
-
-      gestoAranha();
-      delay(3000);
-
-      gestoHangLoose();
-      delay(3000);
-
-      gestoAbrir();
-      delay(3000);
+      gestoApresentacao();
     }
 
     else if (bluetooth == ('F') || bluetooth == ('f')) {
@@ -153,6 +117,44 @@ void aplicaGesto(int d0, int d1, int d2, int d3, int d4) {
   for (int i = 0; i < 5; i++) {
     dedo[i].write(valores[i]);
   }
+}
+
+void gestoApresentacao() {
+  gestoFechar();
+  delay(3000);
+
+  gestoN1();
+  delay(3000);
+
+  gestoN2();
+  delay(3000);
+
+  gestoN3();
+  delay(3000);
+
+  gestoN4();
+  delay(3000);
+
+  gestoN5();
+  delay(3000);
+
+  gestoFechar();
+  delay(3000);
+
+  gestoVitoria();
+  delay(3000);
+
+  gestoRock();
+  delay(3000);
+
+  gestoAranha();
+  delay(3000);
+
+  gestoHangLoose();
+  delay(3000);
+
+  gestoAbrir();
+  delay(3000);
 }
 
 void gestoFechar() {
